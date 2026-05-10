@@ -28,6 +28,9 @@ namespace RegIN_Чернышков.Pages
         public Login()
         {
             InitializeComponent();
+            MainWindow.mainWindow.UserLogIn.HandlerCorrectLogin += CorrectLogin;
+            MainWindow.mainWindow.UserLogIn.HandlerInCorrectLogin += InCorrectLogin;
+            Capture.HandlerCorrectCapture += CorrectCapture;
         }
 
         public void CorrectLogin()
@@ -108,13 +111,7 @@ namespace RegIN_Чернышков.Pages
             IsCapture = true;
         }
 
-        public Login()
-        {
-            InitializeComponent();
-            MainWindow.mainWindow.UserLogIn.HandlerCorrectLogin += CorrectLogin;
-            MainWindow.mainWindow.UserLogIn.HandlerInCorrectLogin += InCorrectLogin;
-            Capture.HandlerCorrectCapture += CorrectCapture;
-        }
+        
 
         private void SetPassword(object sender, KeyEventArgs e)
         {
