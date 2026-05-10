@@ -10,7 +10,7 @@ namespace RegIN_Чернышков.Classes
             var smtpClient = new SmtpClient("smtp.yandex.ru")
             {
                 Port = 587,
-                Credentials = new NetworkCredential("yandex@yandex.ru", "password"),
+                Credentials = new NetworkCredential("yandex@yandex.ru", "fllolhdghwbfgtyp"),
                 EnableSsl = true
             };
 
