@@ -34,7 +34,7 @@ namespace RegIN_Чернышков.Classes
 
         public void GetUserLogin(string Login)
         {
-            this.Id = 1;
+            this.Id = 0;
             this.Login = String.Empty;
             this.Password = String.Empty;
             this.Name = String.Empty;
@@ -44,18 +44,18 @@ namespace RegIN_Чернышков.Classes
 
             if (WorkingDB.OpenConnection(mySqlConnection))
             {
-                MySqlDataReader userQuery = WorkingDB.Query($"SELECT * FROM users WHERE Login = '{Login}'", mySqlConnection);
+                MySqlCommand mySqlCommand = new MySqlCommand("SELECT * FROM `users` WHERE `Login` = @Login", mySqlConnection);
+                mySqlCommand.Parameters.AddWithValue("@Login", Login);
+
+                MySqlDataReader userQuery = mySqlCommand.ExecuteReader();
 
                 if (userQuery.HasRows)
                 {
                     userQuery.Read();
 
                     this.Id = userQuery.GetInt32(0);
-
                     this.Login = userQuery.GetString(1);
-
                     this.Password = userQuery.GetString(2);
-
                     this.Name = userQuery.GetString(3);
 
                     if (!userQuery.IsDBNull(4))
@@ -65,22 +65,24 @@ namespace RegIN_Чернышков.Classes
                     }
 
                     this.DateUpdate = userQuery.GetDateTime(5);
+                    this.DateCreate = userQuery.GetDateTime(6);
 
-                    this.DateUpdate = userQuery.GetDateTime(6);
-
-                    HandlerCorrectLogin.Invoke();
+                    HandlerCorrectLogin?.Invoke();
                 }
                 else
-                    HandlerCorrectLogin.Invoke();
-
-                
+                {
+                    HandlerInCorrectLogin?.Invoke();
+                }
             }
             else
-                HandlerCorrectLogin.Invoke();
+            {
+                HandlerInCorrectLogin?.Invoke();
+            }
 
             WorkingDB.CloseConnection(mySqlConnection);
-
         }
+
+       
 
         public void SetUser()
         {
@@ -109,9 +111,13 @@ namespace RegIN_Чернышков.Classes
             {
                 Password = GeneratePass();
                 MySqlConnection mySqlConnection = WorkingDB.OpenConnection();
+
                 if (WorkingDB.OpenConnection(mySqlConnection))
                 {
-                    WorkingDB.Query($"UPDATE `users` SET `Password`='{this.Password}' WHERE `Login` = '{this.Login}'", mySqlConnection);
+                    MySqlCommand mySqlCommand = new MySqlCommand("UPDATE `users` SET `Password` = @Password WHERE `Login` = @Login", mySqlConnection);
+                    mySqlCommand.Parameters.AddWithValue("@Password", this.Password);
+                    mySqlCommand.Parameters.AddWithValue("@Login", this.Login);
+                    mySqlCommand.ExecuteNonQuery();
                 }
 
                 WorkingDB.CloseConnection(mySqlConnection);
