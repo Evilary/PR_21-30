@@ -7,14 +7,21 @@ namespace RegIN_Чернышков.Classes
     {
         public static void SendMessage(string message, string to)
         {
-            var smtpClient = new SmtpClient("smtp.yandex.ru")
+            var from = "kotboris140107@yandex.ru";
+            var appPassword = "dsgxraxqchmvfvsf";
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            var smtpClient = new SmtpClient("smtp.yandex.ru", 587)
             {
-                Port = 587,
-                Credentials = new NetworkCredential("yandex@yandex.ru", "fllolhdghwbfgtyp"),
-                EnableSsl = true
+                EnableSsl = true,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(from, appPassword),
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                Timeout = 20000
             };
 
-            smtpClient.Send("kotboris140107@yandex.ru", to, "Проект RegIn", message);
+            smtpClient.Send(from, to, "Проект RegIn", message);
         }
     }
 }
